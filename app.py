@@ -22,7 +22,7 @@ try:
     sh = gc.open_by_url(SHEET_URL)
     worksheet = sh.sheet1
 except Exception as e:
-    st.error("⚠️ 系統連線錯誤詳細說明：" + str(e)")
+    st.error("⚠️ 系統連線錯誤詳細說明：" + str(e))
     st.stop()
 
 # 建立輸入表單
