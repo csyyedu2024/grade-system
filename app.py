@@ -13,8 +13,7 @@ st.divider()
 # ----------------------------------------------------
 # ⚠️ 【重要】請把下面這串中文字，替換成你剛剛複製的試算表網址！
 # ----------------------------------------------------
-SHEET_URL = "[https://docs.google.com/spreadsheets/d/1vB-Vqk8t-6CMQGRCGS17JUY8PFNoyUpEcPkfPONO3qc/edit?gid=0#gid=0]"
-
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1vB-Vqk8t-6CMQGRCGS17JUY8PFNoyUpEcPkfPONO3qc/edit?gid=0#gid=0"
 # 建立連線 (讀取保險箱裡的鑰匙)
 try:
     creds_dict = json.loads(st.secrets["google_credentials"])
