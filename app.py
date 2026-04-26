@@ -22,7 +22,7 @@ try:
     sh = gc.open_by_url(SHEET_URL)
     worksheet = sh.sheet1
 except Exception as e:
-    st.error("⚠️ 系統連線設定中。請確認已於 Streamlit Secrets 設定金鑰，或檢查試算表網址是否正確。")
+    st.error("⚠️ 系統連線錯誤詳細說明：{e}")
     st.stop()
 
 # 建立輸入表單
