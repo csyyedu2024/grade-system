@@ -56,12 +56,13 @@ with st.form("grade_registration_form", clear_on_submit=True):
     with col2:
         grade = st.selectbox(
             "🎓 年級", 
-            ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"]
+            ["小一", "小二", "小三", "小四", "小五", "小六", "國一", "國二", "國三"]
         )
+        
+        # 🌟 修改點：將複習單元移到成績上方，且放入右邊的直行中，讓左右兩邊各有 3 個輸入框，視覺更平衡！
+        review_unit = st.text_input("📚 複習單元", placeholder="請輸入本次複習的單元名稱")
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
-    review_unit = st.text_input("📚 複習單元", placeholder="請輸入本次複習的單元名稱")
-    
     # 送出按鈕
     submit_button = st.form_submit_button(label="✨ 送出登記")
 
