@@ -30,13 +30,21 @@ with st.form("grade_registration_form", clear_on_submit=True):
     
     col1, col2 = st.columns(2)
     with col1:
-        school = st.text_input("🏫 學校", placeholder="請輸入學校名稱")
+        # 這裡將 options 設定為您指定的五所學校
+        # index=None 代表預設不選取任何學校，才會顯示出 placeholder 的內容
+        school = st.selectbox(
+            "🏫 學校", 
+            options=["土城國中", "海山國中", "江翠國中", "重慶國中", "新莊國中"],
+            index=None,
+            placeholder="請選擇學校"
+        )
+        
         name = st.text_input("👤 學生姓名", placeholder="請輸入姓名")
         
     with col2:
         grade = st.selectbox(
             "🎓 年級", 
-            ["小一", "小二", "小三", "小四", "小五", "小六", "國一", "國二", "國三"]
+            ["小一", "小二", "小三", "小四", "小五", "小六", "七年級", "八年級", "九年級"]
         )
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
