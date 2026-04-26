@@ -29,18 +29,19 @@ except Exception as e:
 # 🧠 V2.0 雙向記憶魔法：讀取試算表中的舊生名單
 # ==========================================
 try:
-    # 抓取第 3 欄 (C欄) 的所有資料
-    all_names = worksheet.col_values(3)
-    # 過濾掉空白、排除標題，並自動移除重複的名字
+    # 🌟 修改點：因為 Google Sheet 的姓名會移到第 4 欄 (D欄)，所以這裡改成抓第 4 欄！
+    all_names = worksheet.col_values(4)
     unique_names = sorted(list(set([n for n in all_names if n.strip() != "" and n != "學生姓名"])))
 except Exception as e:
-    unique_names = [] # 如果剛好抓不到，就先給空名單
+    unique_names = [] 
 
 # 建立輸入表單
 with st.form("grade_registration_form", clear_on_submit=True):
     st.subheader("✏️ 新增學生紀錄")
     
     col1, col2 = st.columns(2)
+    
+    # 🌟 魔法排版：左邊放學校、舊生、單元
     with col1:
         school = st.selectbox(
             "🏫 學校", 
@@ -48,19 +49,16 @@ with st.form("grade_registration_form", clear_on_submit=True):
             index=None,
             placeholder="請選擇學校"
         )
-        
-        # --- 雙軌制姓名輸入設計 ---
         known_name = st.selectbox("👤 選擇已建檔學生", options=["➕ 建立新學生"] + unique_names)
-        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
+        review_unit = st.text_input("📚 複習單元", placeholder="請輸入本次複習的單元名稱")
         
+    # 🌟 魔法排版：右邊放年級、新生、成績
     with col2:
         grade = st.selectbox(
             "🎓 年級", 
             ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"]
         )
-        
-        # 🌟 修改點：將複習單元移到成績上方，且放入右邊的直行中，讓左右兩邊各有 3 個輸入框，視覺更平衡！
-        review_unit = st.text_input("📚 複習單元", placeholder="請輸入本次複習的單元名稱")
+        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
     # 送出按鈕
@@ -68,20 +66,16 @@ with st.form("grade_registration_form", clear_on_submit=True):
 
 # 處理表單送出後的邏輯
 if submit_button:
-    # 邏輯判斷：如果手打欄位有字，優先用手打的；沒字的話才用選單裡的
     actual_name = new_name.strip() if new_name.strip() else known_name
 
-    # 確保名字不是空值，且不是那個「➕ 建立新學生」的選項
     if actual_name and actual_name != "➕ 建立新學生" and review_unit: 
         with st.spinner("資料同步中，請稍候..."):
             try:
-                # 取得當前台灣時間 (UTC+8)
                 current_time = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
                 
-                # 準備要寫入的新資料列
-                new_row = [current_time, school, grade ,actual_name, review_unit, score]
+                # 🌟 修改點：將寫入試算表的包裹順序改為 [時間, 學校, 年級, 姓名, 單元, 成績]
+                new_row = [current_time, school, grade, actual_name, review_unit, score]
                 
-                # 寫入 Google Sheets
                 worksheet.append_row(new_row)
                 
                 st.success(f"✅ 登記成功！已記錄 **{actual_name}** ({school} {grade}) 於「{review_unit}」的表現。")
