@@ -79,7 +79,7 @@ if submit_button:
                 current_time = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
                 
                 # 準備要寫入的新資料列
-                new_row = [current_time, school, actual_name, grade, review_unit, score]
+                new_row = [current_time, school, grade ,actual_name, review_unit, score]
                 
                 # 寫入 Google Sheets
                 worksheet.append_row(new_row)
