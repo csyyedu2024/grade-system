@@ -56,7 +56,7 @@ with st.form("grade_registration_form", clear_on_submit=True):
     with col2:
         grade = st.selectbox(
             "🎓 年級", 
-            ["小一", "小二", "小三", "小四", "小五", "小六", "國一", "國二", "國三"]
+            ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"]
         )
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
