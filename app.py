@@ -29,7 +29,6 @@ except Exception as e:
 # 🧠 V2.0 雙向記憶魔法：讀取試算表中的舊生名單
 # ==========================================
 try:
-    # 🌟 修改點：因為 Google Sheet 的姓名會移到第 4 欄 (D欄)，所以這裡改成抓第 4 欄！
     all_names = worksheet.col_values(4)
     unique_names = sorted(list(set([n for n in all_names if n.strip() != "" and n != "學生姓名"])))
 except Exception as e:
@@ -41,7 +40,6 @@ with st.form("grade_registration_form", clear_on_submit=True):
     
     col1, col2 = st.columns(2)
     
-    # 🌟 魔法排版：左邊放學校、舊生、單元
     with col1:
         school = st.selectbox(
             "🏫 學校", 
@@ -52,13 +50,16 @@ with st.form("grade_registration_form", clear_on_submit=True):
         known_name = st.selectbox("👤 選擇已建檔學生", options=["➕ 建立新學生"] + unique_names)
         review_unit = st.text_input("📚 複習單元", placeholder="請輸入本次複習的單元名稱")
         
-    # 🌟 魔法排版：右邊放年級、新生、成績
     with col2:
         grade = st.selectbox(
             "🎓 年級", 
-            ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"]
+            ["小一", "小二", "小三", "小四", "小五", "小六", "國一", "國二", "國三"]
         )
         new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
+        
+        # 🌟 修改點：更新了灰色提示字，提醒使用西元年月日 8 碼
+        birthday = st.text_input("🎂 生日 (家長密碼)", placeholder="新生必填西元年月日，如: 20120815")
+        
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
     # 送出按鈕
@@ -73,8 +74,8 @@ if submit_button:
             try:
                 current_time = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
                 
-                # 🌟 修改點：將寫入試算表的包裹順序改為 [時間, 學校, 年級, 姓名, 單元, 成績]
-                new_row = [current_time, school, grade, actual_name, review_unit, score]
+                # 寫入試算表的包裹裡，包含 birthday
+                new_row = [current_time, school, grade, actual_name, review_unit, score, birthday]
                 
                 worksheet.append_row(new_row)
                 
