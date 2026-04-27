@@ -57,8 +57,8 @@ with st.form("grade_registration_form", clear_on_submit=True):
         )
         new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
         
-        # 🌟 修改點：更新了灰色提示字，提醒使用西元年月日 8 碼
-        birthday = st.text_input("🎂 生日 (家長密碼)", placeholder="新生必填西元年月日，如: 20120815")
+        # 🌟 修改點：改為「專屬密碼」輸入框
+        parent_password = st.text_input("🔑 專屬密碼 (家長登入用)", placeholder="新生必填，例如：CS001 (舊生可留空)")
         
         score = st.text_input("💯 成績 / 表現", placeholder="例如：95 或 表現優異")
 
@@ -74,8 +74,8 @@ if submit_button:
             try:
                 current_time = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
                 
-                # 寫入試算表的包裹裡，包含 birthday
-                new_row = [current_time, school, grade, actual_name, review_unit, score, birthday]
+                # 寫入試算表的包裹裡，包含 parent_password
+                new_row = [current_time, school, grade, actual_name, review_unit, score, parent_password]
                 
                 worksheet.append_row(new_row)
                 
