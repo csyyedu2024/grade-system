@@ -52,7 +52,7 @@ with st.form("grade_registration_form", clear_on_submit=True):
     # --- 區塊一：基本資料 ---
     col1, col2 = st.columns(2)
     with col1:
-        school = st.selectbox("🏫 學校", options=["土城國中", "海山國中", "江翠國中", "重慶國中", "新莊國中"], index=None, placeholder="請選擇學校")
+        school = st.selectbox("🏫 學校", options=["土城國中", "海山國中", "江翠國中", "重慶國中", "新莊國中", "板橋國小", "廣福國小", "後埔國小"], index=None, placeholder="請選擇學校")
     with col2:
         grade = st.selectbox("🎓 年級", ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"])
 
