@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import gspread
 from datetime import datetime, timedelta
+from pypinyin import pinyin, Style
 
 # 設定網頁標題與視覺風格
 st.set_page_config(page_title="創思優語 - 登記系統", page_icon="🌱")
@@ -26,7 +27,7 @@ except Exception as e:
     st.stop()
 
 # ==========================================
-# 🧠 V3.0 全自動記憶魔法：建立「姓名-密碼」對照表
+# 🧠 V4.0 全自動記憶 + 注音排序魔法
 # ==========================================
 try:
     all_records = worksheet.get_all_records()
@@ -38,7 +39,23 @@ try:
     has_pwd_df = df[df['專屬密碼'] != '']
     pwd_dict = dict(zip(has_pwd_df['學生姓名'], has_pwd_df['專屬密碼']))
     
-    unique_names = sorted(list(set([n for n in df['學生姓名'] if n != "" and n != "學生姓名"])))
+    raw_names = list(set([n for n in df['學生姓名'] if n != "" and n != "學生姓名"]))
+    
+    # 注音排序邏輯
+    BPMF_ORDER = "ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ"
+    def get_zhuyin_sort_key(name):
+        try:
+            py = pinyin(name[0], style=Style.BOPOMOFO, errors='ignore')
+            if py and py[0] and len(py[0][0]) > 0:
+                first_char = py[0][0][0] 
+                if first_char in BPMF_ORDER:
+                    return (BPMF_ORDER.index(first_char), name)
+        except:
+            pass
+        return (999, name)
+
+    unique_names = sorted(raw_names, key=get_zhuyin_sort_key)
+    
 except Exception as e:
     pwd_dict = {}
     unique_names = [] 
@@ -47,23 +64,30 @@ except Exception as e:
 with st.form("grade_registration_form", clear_on_submit=True):
     st.subheader("✏️ 新增學生紀錄")
     
-    # 🌟 修改點：改用「橫向區塊」分層設計，完美解決手機版堆疊順序！
-    
     # --- 區塊一：基本資料 ---
     col1, col2 = st.columns(2)
     with col1:
-        school = st.selectbox("🏫 學校", options=["土城國中", "海山國中", "江翠國中", "重慶國中", "新莊國中","長安國中", "板橋國小", "廣福國小", "新埔國小", "後埔國小","海山國小","沙崙國小", "雙蓮國小", "博嘉實小", "私立育才國小", "私立康橋國小", "私立裕德國小", "台北歐洲學校"], index=None, placeholder="請選擇學校")
+        # 🌟 更新：學校選單擴充
+        school = st.selectbox(
+            "🏫 學校", 
+            options=["土城國中", "海山國中", "江翠國中", "重慶國中", "新莊國中", "長安國中", "板橋國小", "廣福國小", "新埔國小", "後埔國小", "海山國小", "沙崙國小", "雙蓮國小", "博嘉實小", "私立育才國小", "私立康橋國小", "私立裕德國小", "台北歐洲學校"], 
+            index=None, 
+            placeholder="請選擇學校"
+        )
     with col2:
-        grade = st.selectbox("🎓 年級", ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"])
+        # 🌟 更新：年級選單標示調整
+        grade = st.selectbox(
+            "🎓 年級", 
+            ["小一", "小二", "小三", "小四", "小五", "小六", "七年級（國一）", "八年級（國二）", "九年級（國三）"]
+        )
 
     # --- 區塊二：學生身分與密碼 ---
     col3, col4 = st.columns(2)
     with col3:
         known_name = st.selectbox("👤 選擇已建檔學生", options=["➕ 建立新學生"] + unique_names)
     with col4:
-        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：小創")
+        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
         
-    # 將密碼獨立橫跨一整行，視覺更舒爽，也不會被擠到下面
     parent_password = st.text_input("🔑 專屬密碼 (家長登入用)", placeholder="新生必填，舊生系統將自動帶入")
 
     # --- 區塊三：學習表現 ---
