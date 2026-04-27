@@ -86,7 +86,7 @@ with st.form("grade_registration_form", clear_on_submit=True):
     with col3:
         known_name = st.selectbox("👤 選擇已建檔學生", options=["➕ 建立新學生"] + unique_names)
     with col4:
-        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：彧安")
+        new_name = st.text_input("👉 或手動輸入新學生", placeholder="若為新生請填此欄，例如：小創")
         
     parent_password = st.text_input("🔑 專屬密碼 (家長登入用)", placeholder="新生必填，舊生系統將自動帶入")
 
